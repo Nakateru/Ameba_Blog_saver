@@ -11,4 +11,5 @@ https://ameblo.jp/ske48official/theme-10109735830.html
 https://ameblo.jp/ske48official/entry-12544427769.html
 
 自动识别是主题还是文章
+
 自动保存不同图片格式
