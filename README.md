@@ -4,6 +4,7 @@ V1
 只能保存单篇文章
 例如:https://ameblo.jp/ske48official/entry-12544427769.html
 
+
 V2.0
 
 保存主题中的记事(theme)或单篇记事(entry)
@@ -19,7 +20,9 @@ https://ameblo.jp/ske48official/entry-12544427769.html
 自动保存不同图片格式
 
 
+
 V2.1
+
 加入失败列表
 
 修改部分print
