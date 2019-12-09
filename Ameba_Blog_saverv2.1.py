@@ -7,7 +7,9 @@ import json
 import time
 
 
-def entrysaverfun(url, fl): #url,失败列表fl
+def entrysaverfun(url, fl=None):  # url,失败列表fl
+    if fl is None:
+        fl = [0]
     piclist = []  # 图片列表
     i = 1
 
@@ -30,7 +32,7 @@ def entrysaverfun(url, fl): #url,失败列表fl
         # print('Path : ' + path)
     except Exception:
         print('Error URL')
-        fl.append(url) #加入失败列表
+        fl.append(url)  # 加入失败列表
 
     try:  # 创建文件夹 '''时间 标题'''
         if not os.path.exists(themename[0] + '/' + path):
@@ -134,7 +136,7 @@ def Searchentry(url, name):
             entrylist.append(entrylink)
 
 
-def Pagefun(urlflag, Fristthemeurl):
+def Pagefun(urlflag, Fristthemeurl):  # urlflag,0:theme,1:archive
     global entrylist
     entrylist = []
     themeurl = Fristthemeurl
@@ -241,7 +243,7 @@ def is_amebaurl(url):
         return flag
 
 
-def savejob1(entrylist, l):
+def savejob1(entrylist, l):  # 失败列表参数l传入entrysaverfun
     for i in entrylist:
         entryurl = 'https://ameblo.jp' + i
         entrysaverfun(entryurl, l)
@@ -272,7 +274,7 @@ def multicore():
         print('No entry in this theme')
     elif entrylistlen == 1:
         entryurl = 'https://ameblo.jp' + entrylist[0]
-        entrysaverfun(entryurl,[0]) #单篇记事的情况没有用到失败列表，用任意的列表代替参数
+        entrysaverfun(entryurl)
     else:
         for i in entrylist:  # 分两份给两个任务
             job2list.append(i)
@@ -288,6 +290,7 @@ def multicore():
         p2.start()
         p1.join()
         p2.join()
+
 
 if __name__ == '__main__':
     job2list = []
@@ -309,7 +312,7 @@ if __name__ == '__main__':
 
     if is_amebaurl(Fristurl) == 0:
         print('This is an Ameba entry URL')
-        entrysaverfun(Fristurl,[0])
+        entrysaverfun(Fristurl)
         st1 = time.time()
 
     elif is_amebaurl(Fristurl) == 1:
