@@ -17,11 +17,11 @@ def entrysaverfun(url, fl=None):  # url,失败列表fl
     soup = BeautifulSoup(data, 'html.parser')
 
     try:  # 获取日期时间主题标题
-        date = re.findall(re.compile(r'datePublished":"(.*?)T'), soup.get_text())
-        datetime = re.findall(re.compile(r'datePublished":"(.*?)","dateModified"'), soup.get_text())
-        themename = re.findall(re.compile(r'theme_name":"(.*?)","user_id"'), soup.get_text())
-        articletitle = re.findall(re.compile(r'entry_title":"(.*?)","entry_text"'), soup.get_text())
-        # entryid = re.findall(re.compile(r'-.*?(\d+).html'), url)
+        date = re.findall(r'datePublished":"(.*?)T', soup.get_text())
+        datetime = re.findall(r'datePublished":"(.*?)","dateModified"', soup.get_text())
+        themename = re.findall(r'theme_name":"(.*?)","user_id"', soup.get_text())
+        articletitle = re.findall(r'entry_title":"(.*?)","entry_text"', soup.get_text())
+        # entryid = re.findall(r'-.*?(\d+).html', url)
         path = date[0] + ' ' + articletitle[0]
         path = path.replace(r'\\', '')
         path = json.loads(f'"{path}"')
@@ -141,14 +141,14 @@ def Pagefun(urlflag, Fristthemeurl):  # urlflag,0:theme,1:archive
     entrylist = []
     themeurl = Fristthemeurl
     if urlflag == 0:
-        Fristthemenum = re.findall(re.compile(r'theme(.*?)-'), Fristthemeurl)
-        themeid = re.findall(re.compile(r'-.*?(\d+).html'), Fristthemeurl)
+        Fristthemenum = re.findall(r'theme(.*?)-', Fristthemeurl)
+        themeid = re.findall(r'-.*?(\d+).html', Fristthemeurl)
         print('Blog theme URL :', themeurl)
         themeid = themeid[0]
         print('Blog theme ID :', themeid)
     else:
-        Fristthemenum = re.findall(re.compile(r'archive(.*?)-'), Fristthemeurl)
-        achiveid = re.findall(re.compile(r'-.*?(\d+).html'), Fristthemeurl)
+        Fristthemenum = re.findall(r'archive(.*?)-', Fristthemeurl)
+        achiveid = re.findall(r'-.*?(\d+).html', Fristthemeurl)
         print('Blog archive URL :', themeurl)
         themeid = achiveid[0]
         print('Blog archive ID :', themeid)
@@ -303,7 +303,7 @@ if __name__ == '__main__':
     st = time.time()
 
     try:
-        blogname = re.findall(re.compile(r'ameblo.jp/(.*?)/'), Fristurl)
+        blogname = re.findall(r'ameblo.jp/(.*?)/', Fristurl)
         blogname = blogname[0]
         print('Blog name: ' + blogname)
     except Exception:
