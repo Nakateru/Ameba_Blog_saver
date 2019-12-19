@@ -86,8 +86,6 @@ def entrysaverfun(url, fl=None):  # url,失败列表fl
         for piclink in [str for str in links if str not in ['', ' ', None]]:
             if piclink.startswith('https://stat.ameba.jp/user_images/'):  # 筛选博客图片url
                 piclist.append(piclink)
-            if piclink.startswith('http://stat.ameba.jp/user_images/'):
-                piclist.append(piclink)
         # print(links)
         # print(piclist)
         piclen = len(piclist)
