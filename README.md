@@ -5,6 +5,7 @@ V1
 例如:https://ameblo.jp/ske48official/entry-12544427769.html
 
 
+
 V2.0
 
 保存主题中的记事(theme)或单篇记事(entry)
@@ -32,3 +33,16 @@ V2.1
 可以保存某个月的主题中的记事(archive)
 
 例如:https://ameblo.jp/ske48official/archive-201901.html
+
+
+V2.2
+
+使用selenium保存内容
+
+可以保存视频
+
+加入过滤器，可以选择保存标题或正文中包含关键词的记事：
+
+1）输入O进入过滤器设置模式
+2）输入要包含的关键词
+3）输入记事或主题url
