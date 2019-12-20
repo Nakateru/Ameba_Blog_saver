@@ -16,7 +16,7 @@ def entrysaverfun(url, fl=None):  # url,失败列表fl
     i = 1
 
     options = webdriver.ChromeOptions()
-    # options.add_argument('--headless')
+    options.add_argument('--headless')
     options.add_experimental_option('excludeSwitches', ['enable-automation'])
     driver = webdriver.Chrome(chrome_options=options)
     driver.get(url)
