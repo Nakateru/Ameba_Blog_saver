@@ -410,6 +410,7 @@ if __name__ == '__main__':
                             exit()
 
                     else:
+                        print('Searching keywords in all entries text of this theme...')
                         for i in entrylist:
                             entryurl = 'https://ameblo.jp' + i
                             if is_kw_contain(entryurl, kw, 0):
@@ -451,6 +452,7 @@ if __name__ == '__main__':
                             exit()
 
                     else:
+                        print('Searching keywords in all entries text of this theme...')
                         for i in entrylist:
                             entryurl = 'https://ameblo.jp' + i
                             if is_kw_contain(entryurl, kw, 0):
@@ -523,6 +525,7 @@ if __name__ == '__main__':
                             exit()
 
                     else:
+                        print('Searching keywords in all entries text of this theme...')
                         for i in entrylist:
                             entryurl = 'https://ameblo.jp' + i
                             if is_kw_contain(entryurl, kw, 1):
@@ -563,6 +566,7 @@ if __name__ == '__main__':
                             exit()
 
                     else:
+                        print('Searching keywords in all entries text of this theme...')
                         for i in entrylist:
                             entryurl = 'https://ameblo.jp' + i
                             if is_kw_contain(entryurl, kw, 1):
