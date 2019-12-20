@@ -5,6 +5,7 @@ V1
 例如:https://ameblo.jp/ske48official/entry-12544427769.html
 
 
+
 V2.0
 
 保存主题中的记事(theme)或单篇记事(entry)
@@ -35,6 +36,7 @@ V2.1
 
 
 V2.2
+
 使用selenium保存内容
 
 可以保存视频
