@@ -10,7 +10,7 @@ import time
 
 def entrysaverfun(url, fl=None):  # url,失败列表fl
     if fl is None:
-        fl = [0]
+        fl = []
     piclist = []
     videolist=[]
     i = 1
@@ -95,6 +95,7 @@ def entrysaverfun(url, fl=None):  # url,失败列表fl
         links = [aurl.get_attribute('src') for aurl in driver.find_element_by_id('entryBody').find_elements_by_tag_name('img')]
         for piclink in links:
             if piclink.startswith('https://stat.ameba.jp/user_images/'):
+                piclink=re.search(r"(.+)\?caw=(\d+)", piclink).group(1)
                 piclist.append(piclink)
         # print(links)
         # print(piclist)
@@ -300,13 +301,18 @@ def savejob2(job2list, l):
 def failedlistfun(fl):
     fl = list(set(fl))
     l = len(fl)
-    if l > 0:
-        print('Saved Part of Blog Entries Media in', '%.2f' % (st1 - st), 's')
+    t=st1 - st
+    h = t / 3600
+    m = t % 3600 / 60
+    s = t % 60
+    if l==0:
+        print('Saved All Blog Entries Media in', '%02d:%02d:%02d'%(int(h),int(m),int(s)))
+    else:
+        print('Saved Part of Blog Entries Media in', '%02d:%02d:%02d'%(int(h),int(m),int(s)))
         print('----------Failed to save URL list-----------')
         for i in fl:
             print(i)
-    else:
-        print('Saved All Blog Entries Media in', '%.2f' % (st1 - st), 's')
+
 
 
 def multicore():
@@ -361,7 +367,7 @@ if __name__ == '__main__':
     containkwlist=[]
     failedlist = mp.Manager().list()
     print('Ameba Blog Saver v2.2')
-    print('Author  :  Nakateru (2019.12.21)')
+    print('Author  :  Nakateru (2019.12.22)')
     firstinput = input("Input Ameba Blog URL or 'O' to set keywords filter:")
     if firstinput == 'O' or firstinput == 'o':
         print('[1]Filter keywords from entry title [2]Filter keywords from entries text [3]Exit')
@@ -381,10 +387,7 @@ if __name__ == '__main__':
                 if is_amebaurl(Fristurl) == 0:
                     print('This is an Ameba entry URL')
                     if is_kw_contain(Fristurl, kw, 0):
-                        st = time.time()
                         entrysaverfun(Fristurl)
-                        st1 = time.time()
-                        failedlistfun(failedlist)
                     else:
                         print('Entry title does not contain keywords')
                         exit()
@@ -496,10 +499,7 @@ if __name__ == '__main__':
                 if is_amebaurl(Fristurl) == 0:
                     print('This is an Ameba entry URL')
                     if is_kw_contain(Fristurl, kw, 1):
-                        st = time.time()
                         entrysaverfun(Fristurl)
-                        st1 = time.time()
-                        failedlistfun(failedlist)
                     else:
                         print('Entry text does not contain keywords')
                         exit()
@@ -615,8 +615,6 @@ if __name__ == '__main__':
         if is_amebaurl(Fristurl) == 0:
             print('This is an Ameba entry URL')
             entrysaverfun(Fristurl)
-            st1 = time.time()
-            failedlistfun(failedlist)
 
         elif is_amebaurl(Fristurl) == 1:
             print('This is an Ameba theme URL')
