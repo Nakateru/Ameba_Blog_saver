@@ -52,4 +52,6 @@ V2.2.1
 
 V2.2.2
 
-输入https://ameblo.jp/+ 用户名+/entrylist.html保存整个账号的记事（未完全测试过）
+1）输入https://ameblo.jp/+ 用户名+/entrylist.html保存整个账号的记事（未完全测试过）
+
+2）输入y
