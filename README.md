@@ -37,7 +37,7 @@ V2.1
 
 V2.2.1
 
-fix bugs
+bug fixes
 
 使用selenium保存内容
 
