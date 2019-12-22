@@ -282,7 +282,6 @@ def Pagefun(urlflag, Fristthemeurl):  # urlflag,0:theme,1:archive,2:entrylist
     else:
         print('This account has ' + str(len(entrylist)) + ' entries(entry).')
 
-
 def is_amebaurl(url):
     flag = 0
     if url.startswith('https://ameblo.jp/' + blogname + '/entrylist'):
