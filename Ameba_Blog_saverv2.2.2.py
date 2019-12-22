@@ -108,29 +108,29 @@ def entrysaverfun(url, fl=None):
         print('Failed to Get ' + path + ' Pictures')
         fl.append(url)
 
-        try:
-            if not piclen == 0:
-                print('Found ' + str(piclen) + ' picture(s) in blog ' + path)
-                for k in piclist:
-                    # print(k)
-                    r = requests.get(url=k)
-                    pictype = requests.head(k).headers.get('content-type')  # 判断图片格式
-                    if pictype == 'image/jpeg':
-                        pictype = 'jpg'
-                    elif pictype == 'image/gif':
-                        pictype = 'gif'
-                    elif pictype == 'image/png':
-                        pictype = 'png'
-                    picname = path + str(i) + '.' + pictype
-                    with open(themename + '/' + path + '/' + picname, 'wb') as f:
+    try:
+        if not piclen == 0:
+            print('Found ' + str(piclen) + ' picture(s) in blog ' + path)
+            for k in piclist:
+                # print(k)
+                r = requests.get(url=k)
+                pictype = requests.head(k).headers.get('content-type')  # 判断图片格式
+                if pictype == 'image/jpeg':
+                    pictype = 'jpg'
+                elif pictype == 'image/gif':
+                    pictype = 'gif'
+                elif pictype == 'image/png':
+                    pictype = 'png'
+                picname = path + str(i) + '.' + pictype
+                with open(themename + '/' + path + '/' + picname, 'wb') as f:
                         f.write(r.content)
-                    i += 1
-                    if i > piclen:
-                        i = 1
-                        print('Saved Blog ' + path + ' pictures')
-        except Exception:
-            print('Failed to Save pictures,URL:', url)
-            fl.append(url)
+                i += 1
+                if i > piclen:
+                    i = 1
+                    print('Saved Blog ' + path + ' pictures')
+    except Exception:
+        print('Failed to Save pictures,URL:', url)
+        fl.append(url)
 
     try:
         iframes = driver.find_element_by_id('entryBody').find_elements_by_tag_name('iframe')
@@ -150,27 +150,26 @@ def entrysaverfun(url, fl=None):
         fl.append(url)
         driver.quit()
 
-
-        try:
-            if not videolistlen == 0:
-                print('Found ' + str(videolistlen) + ' video(s) in blog ' + path)
-                for k in videolist:
-                    # print(k)
-                    r = requests.get(k)
-                    videotype = requests.head(k).headers.get('content-type')  # 判断图片格式
-                    videotype = videotype[6:]
-                    # print(videotype[6:])
-                    videoname = path + ' ' + str(i) + '.' + videotype
-                    with open(themename + '/' + path + '/' + videoname, 'wb') as f:
-                        f.write(r.content)
-                i += 1
-                if i > videolistlen:
-                    print('Saved Blog ' + path + ' videos')
-                    print('Saved blog ' + path + ' Successfully')
-        except Exception:
-            print('Failed to Save videos,URL:', url)
-            fl.append(url)
-            driver.quit()
+    try:
+        if not videolistlen == 0:
+            print('Found ' + str(videolistlen) + ' video(s) in blog ' + path)
+            for k in videolist:
+                # print(k)
+                r = requests.get(k)
+                videotype = requests.head(k).headers.get('content-type')  # 判断图片格式
+                videotype = videotype[6:]
+                # print(videotype[6:])
+                videoname = path + ' ' + str(i) + '.' + videotype
+                with open(themename + '/' + path + '/' + videoname, 'wb') as f:
+                    f.write(r.content)
+            i += 1
+            if i > videolistlen:
+                print('Saved Blog ' + path + ' videos')
+                print('Saved blog ' + path + ' Successfully')
+    except Exception:
+        print('Failed to Save videos,URL:', url)
+        fl.append(url)
+        driver.quit()
 
     driver.quit()
 
