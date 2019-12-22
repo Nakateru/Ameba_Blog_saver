@@ -8,11 +8,11 @@ import json
 import time
 
 
-def entrysaverfun(url, fl=None):  # url,失败列表fl
+def entrysaverfun(url, fl=None):
     if fl is None:
         fl = []
     piclist = []
-    videolist=[]
+    videolist = []
     i = 1
 
     options = webdriver.ChromeOptions()
@@ -25,9 +25,9 @@ def entrysaverfun(url, fl=None):  # url,失败列表fl
         datetime = driver.find_element_by_xpath("//span[@class='articleTime']").text[:19]
     except Exception:
         try:
-            datetime = driver.find_element_by_xpath("//time[@class='skin-textQuiet']").text[4:]
+            datetime = driver.find_element_by_xpath("//time[@class='skin-textQuiet']").text[-19:]
         except Exception:
-            print('Failed to Get Entry Time',url)
+            print('Failed to Get Entry Time', url)
             fl.append(url)
 
     try:
@@ -36,7 +36,7 @@ def entrysaverfun(url, fl=None):  # url,失败列表fl
         try:
             themename = driver.find_element_by_xpath("//dl[@class='_3wmM1dM_ skin-entryThemes']").text[4:]
         except Exception:
-            print('Failed to Get Theme Name',url)
+            print('Failed to Get Theme Name', url)
             fl.append(url)
 
     date = datetime[:10]
@@ -92,22 +92,23 @@ def entrysaverfun(url, fl=None):  # url,失败列表fl
         fl.append(url)
 
     try:
-        links = [aurl.get_attribute('src') for aurl in driver.find_element_by_id('entryBody').find_elements_by_tag_name('img')]
+        links = [aurl.get_attribute('src') for aurl in
+                 driver.find_element_by_id('entryBody').find_elements_by_tag_name('img')]
         for piclink in links:
             if piclink.startswith('https://stat.ameba.jp/user_images/'):
-                piclink=re.search(r"(.+)\?caw=(\d+)", piclink).group(1)
+                piclink = re.search(r"(.+)\?caw=(\d+)", piclink).group(1)
                 piclist.append(piclink)
         # print(links)
         # print(piclist)
         piclen = len(piclist)
-        if piclen==0:
+        if piclen == 0:
             print('No picture in in blog ' + path)
 
     except Exception:
         print('Failed to Get ' + path + ' Pictures')
         fl.append(url)
 
-    if not piclen==0:
+    if not piclen == 0:
         print('Found ' + str(piclen) + ' picture(s) in blog ' + path)
         try:
             for k in piclist:
@@ -120,7 +121,7 @@ def entrysaverfun(url, fl=None):  # url,失败列表fl
                     pictype = 'gif'
                 elif pictype == 'image/png':
                     pictype = 'png'
-                picname = path + str(i) + '.'+ pictype
+                picname = path + str(i) + '.' + pictype
                 with open(themename + '/' + path + '/' + picname, 'wb') as f:
                     f.write(r.content)
                 i += 1
@@ -149,7 +150,7 @@ def entrysaverfun(url, fl=None):  # url,失败列表fl
         fl.append(url)
         driver.quit()
 
-    if not videolistlen==0:
+    if not videolistlen == 0:
         print('Found ' + str(videolistlen) + ' video(s) in blog ' + path)
         try:
             for k in videolist:
@@ -166,11 +167,12 @@ def entrysaverfun(url, fl=None):  # url,失败列表fl
                 print('Saved Blog ' + path + ' videos')
                 print('Saved blog ' + path + ' Successfully')
         except Exception:
-                print('Failed to Save videos,URL:', url)
-                fl.append(url)
-                driver.quit()
+            print('Failed to Save videos,URL:', url)
+            fl.append(url)
+            driver.quit()
 
     driver.quit()
+
 
 def Searchentry(url, name):
     data = requests.get(url).content
@@ -179,6 +181,7 @@ def Searchentry(url, name):
     for entrylink in [str for str in links if str not in ['', ' ', None]]:
         if entrylink.startswith('/' + name + '/entry-'):
             entrylist.append(entrylink)
+
 
 def Pagefun(urlflag, Fristthemeurl):  # urlflag,0:theme,1:archive
     global entrylist
@@ -197,10 +200,10 @@ def Pagefun(urlflag, Fristthemeurl):  # urlflag,0:theme,1:archive
         themeid = achiveid[0]
         print('Blog archive ID :', themeid)
 
-    # '''定义主题序号'''
     if Fristthemenum[0] == '':
         themenum = 1
         Original_theme_num = 1
+        print('Searching entries on Page', themenum)
     else:
         themenum = int(Fristthemenum[0])
         Original_theme_num = int(Fristthemenum[0])
@@ -220,7 +223,7 @@ def Pagefun(urlflag, Fristthemeurl):  # urlflag,0:theme,1:archive
             NextP2 = soup.find('a', class_='skin-paginationNext skin-btnIndex js-paginationNext')
             if (NextP1 == None and NextP2 == None):  # 无下一页
                 if themenum == 1:  # 只有一页
-                    print('This theme has only 1 Page')
+                    print('This theme only has 1 Page')
                     break
                 elif Original_theme_num == 1:  # 本来就是从第一页开始翻的
                     break
@@ -287,8 +290,8 @@ def is_amebaurl(url):
         return flag
 
 
-def savejob1(entrylist, l):  # 失败列表参数l传入entrysaverfun
-    for i in entrylist:
+def savejob1(job1list, l):
+    for i in job1list:
         entryurl = 'https://ameblo.jp' + i
         entrysaverfun(entryurl, l)
 
@@ -299,52 +302,50 @@ def savejob2(job2list, l):
         entrysaverfun(entryurl, l)
 
 def failedlistfun(fl):
-    fl = list(set(fl))
-    l = len(fl)
-    t=st1 - st
+    t = st1 - st
     h = t / 3600
     m = t % 3600 / 60
     s = t % 60
-    if l==0:
-        print('Saved All Blog Entries Media in', '%02d:%02d:%02d'%(int(h),int(m),int(s)))
+    fl = list(set(fl))
+    llen = len(fl)
+    if llen == 0:
+        print('Saved All Blog Entries Media in', '%02d:%02d:%02d' % (int(h), int(m), int(s)))
     else:
-        print('Saved Part of Blog Entries Media in', '%02d:%02d:%02d'%(int(h),int(m),int(s)))
+        print('Saved Part of Blog Entries Media in', '%02d:%02d:%02d' % (int(h), int(m), int(s)))
         print('----------Failed to save URL list-----------')
         for i in fl:
             print(i)
 
 
-
-def multicore():
-    entrylistlen = len(entrylist)
-    # print(entrylistlen)
-    if entrylistlen == 0:
+def multicore(list1, list2, fl):
+    list1len = len(list1)
+    # print(list1len)
+    if list1len == 0:
         print('No entry in this theme')
-    elif entrylistlen == 1:
-        entryurl = 'https://ameblo.jp' + entrylist[0]
+    elif list1len == 1:
+        entryurl = 'https://ameblo.jp' + list1[0]
         entrysaverfun(entryurl)
     else:
-        for i in entrylist:  # 分两份给两个任务
-            job2list.append(i)
-            entrylist.remove(i)
-        # print(job2list)
-        # print(entrylist)
-        # print(len(job2list))
-        # print(len(entrylist))
-
-        p1 = mp.Process(target=savejob1, args=(entrylist, failedlist))
-        p2 = mp.Process(target=savejob2, args=(job2list, failedlist))
+        for i in list1:  # divide list1 into 2 lists
+            list2.append(i)
+            list1.remove(i)
+        # print(list1)
+        # print(list2)
+        # print(len(list1))
+        # print(len(list2))
+        p1 = mp.Process(target=savejob1, args=(list1, fl))
+        p2 = mp.Process(target=savejob2, args=(list2, fl))
         p1.start()
         p2.start()
         p1.join()
         p2.join()
 
 
-def is_kw_contain(url,keyword,title_or_text=0):
-    flag=True
+def is_kw_contain(url, keyword, title_or_text=0):
+    flag = True
     data = requests.get(url).content
     soup = BeautifulSoup(data, 'html.parser')
-    if title_or_text==0:
+    if title_or_text == 0:
         articletitle = re.findall(r'entry_title":"(.*?)","entry_text"', soup.get_text())
         if keyword in articletitle[0]:
             return flag
@@ -361,13 +362,12 @@ def is_kw_contain(url,keyword,title_or_text=0):
             return flag
 
 
-
 if __name__ == '__main__':
     job2list = []
-    containkwlist=[]
+    containkwlist = []
     failedlist = mp.Manager().list()
-    print('Ameba Blog Saver v2.2')
-    print('Author  :  Nakateru (2019.12.22)')
+    print('Ameba Blog Saver v2.2.1')
+    print('Author  :  Nakateru (2019.12.23)')
     firstinput = input("Input Ameba Blog URL or 'O' to set keywords filter:")
     if firstinput == 'O' or firstinput == 'o':
         print('[1]Filter keywords from entry title [2]Filter keywords from entries text [3]Exit')
@@ -387,7 +387,9 @@ if __name__ == '__main__':
                 if is_amebaurl(Fristurl) == 0:
                     print('This is an Ameba entry URL')
                     if is_kw_contain(Fristurl, kw, 0):
-                        entrysaverfun(Fristurl)
+                        entrysaverfun(Fristurl,failedlist)
+                        st1 = time.time()
+                        failedlistfun(failedlist)
                     else:
                         print('Entry title does not contain keywords')
                         exit()
@@ -405,7 +407,7 @@ if __name__ == '__main__':
                         entryurl = 'https://ameblo.jp' + entrylist[0]
                         if is_kw_contain(entryurl, kw, 0):
                             print('Entry title contains keywords')
-                            entrysaverfun(entryurl)
+                            entrysaverfun(entryurl,failedlist)
                             st1 = time.time()
                             failedlistfun(failedlist)
                         else:
@@ -422,17 +424,9 @@ if __name__ == '__main__':
                                 pass
                         containkwlistlen = len(containkwlist)
                         print(containkwlistlen, 'entries title contain keywords')
-
-                        for i in containkwlist:  # 分两份给两个任务
-                            job2list.append(i)
-                            containkwlist.remove(i)
-
-                        p1 = mp.Process(target=savejob1, args=(containkwlist, failedlist))
-                        p2 = mp.Process(target=savejob2, args=(job2list, failedlist))
-                        p1.start()
-                        p2.start()
-                        p1.join()
-                        p2.join()
+                        multicore(containkwlist, job2list, failedlist)
+                        st1 = time.time()
+                        failedlistfun(failedlist)
 
                 elif is_amebaurl(Fristurl) == 2:
                     print('This is an Ameba theme URL classified by months')
@@ -447,7 +441,7 @@ if __name__ == '__main__':
                         entryurl = 'https://ameblo.jp' + entrylist[0]
                         if is_kw_contain(entryurl, kw, 0):
                             print('Entry title contains keywords')
-                            entrysaverfun(entryurl)
+                            entrysaverfun(entryurl,failedlist)
                             st1 = time.time()
                             failedlistfun(failedlist)
                         else:
@@ -465,17 +459,9 @@ if __name__ == '__main__':
 
                         containkwlistlen = len(containkwlist)
                         print(containkwlistlen, 'entries title contain keywords')
-
-                        for i in containkwlist:  # 分两份给两个任务
-                            job2list.append(i)
-                            containkwlist.remove(i)
-
-                        p1 = mp.Process(target=savejob1, args=(containkwlist, failedlist))
-                        p2 = mp.Process(target=savejob2, args=(job2list, failedlist))
-                        p1.start()
-                        p2.start()
-                        p1.join()
-                        p2.join()
+                        multicore(containkwlist, job2list, failedlist)
+                        st1 = time.time()
+                        failedlistfun(failedlist)
                 else:
                     print('Error URL')
                     exit()
@@ -499,7 +485,9 @@ if __name__ == '__main__':
                 if is_amebaurl(Fristurl) == 0:
                     print('This is an Ameba entry URL')
                     if is_kw_contain(Fristurl, kw, 1):
-                        entrysaverfun(Fristurl)
+                        entrysaverfun(Fristurl,failedlist)
+                        st1 = time.time()
+                        failedlistfun(failedlist)
                     else:
                         print('Entry text does not contain keywords')
                         exit()
@@ -517,7 +505,7 @@ if __name__ == '__main__':
                         entryurl = 'https://ameblo.jp' + entrylist[0]
                         if is_kw_contain(entryurl, kw, 1):
                             print('Entry title contains keywords')
-                            entrysaverfun(entryurl)
+                            entrysaverfun(entryurl,failedlist)
                             st1 = time.time()
                             failedlistfun(failedlist)
                         else:
@@ -534,17 +522,9 @@ if __name__ == '__main__':
                                 pass
                         containkwlistlen = len(containkwlist)
                         print(containkwlistlen, 'entries title contain keywords')
-
-                        for i in containkwlist:  # 分两份给两个任务
-                            job2list.append(i)
-                            containkwlist.remove(i)
-
-                        p1 = mp.Process(target=savejob1, args=(containkwlist, failedlist))
-                        p2 = mp.Process(target=savejob2, args=(job2list, failedlist))
-                        p1.start()
-                        p2.start()
-                        p1.join()
-                        p2.join()
+                        multicore(containkwlist, job2list, failedlist)
+                        st1 = time.time()
+                        failedlistfun(failedlist)
 
                 elif is_amebaurl(Fristurl) == 2:
                     print('This is an Ameba theme URL classified by months')
@@ -558,7 +538,7 @@ if __name__ == '__main__':
                         entryurl = 'https://ameblo.jp' + entrylist[0]
                         if is_kw_contain(entryurl, kw, 1):
                             print('Entry text contains keywords')
-                            entrysaverfun(entryurl)
+                            entrysaverfun(entryurl,failedlist)
                             st1 = time.time()
                             failedlistfun(failedlist)
                         else:
@@ -573,20 +553,12 @@ if __name__ == '__main__':
                                 containkwlist.append(i)
                             else:
                                 pass
-
                         containkwlistlen = len(containkwlist)
                         print(containkwlistlen, 'entries text contain keywords')
+                        multicore(containkwlist, job2list, failedlist)
+                        st1 = time.time()
+                        failedlistfun(failedlist)
 
-                        for i in containkwlist:  # 分两份给两个任务
-                            job2list.append(i)
-                            containkwlist.remove(i)
-
-                        p1 = mp.Process(target=savejob1, args=(containkwlist, failedlist))
-                        p2 = mp.Process(target=savejob2, args=(job2list, failedlist))
-                        p1.start()
-                        p2.start()
-                        p1.join()
-                        p2.join()
                 else:
                     print('Error URL')
                     exit()
@@ -614,18 +586,20 @@ if __name__ == '__main__':
 
         if is_amebaurl(Fristurl) == 0:
             print('This is an Ameba entry URL')
-            entrysaverfun(Fristurl)
+            entrysaverfun(Fristurl, failedlist)
+            st1 = time.time()
+            failedlistfun(failedlist)
 
         elif is_amebaurl(Fristurl) == 1:
             print('This is an Ameba theme URL')
             Pagefun(0, Fristurl)
-            multicore()
+            multicore(entrylist, job2list, failedlist)
             st1 = time.time()
             failedlistfun(failedlist)
 
         elif is_amebaurl(Fristurl) == 2:
             print('This is an Ameba theme URL classified by months')
             Pagefun(1, Fristurl)
-            multicore()
+            multicore(entrylist, job2list, failedlist)
             st1 = time.time()
             failedlistfun(failedlist)
