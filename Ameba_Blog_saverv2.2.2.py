@@ -1,11 +1,7 @@
 from selenium import webdriver
 from bs4 import BeautifulSoup
 import multiprocessing as mp
-import requests
-import os
-import re
-import json
-import time
+import requests, os, re, json, time
 
 
 def entrysaverfun(url, fl=None):
@@ -92,13 +88,11 @@ def entrysaverfun(url, fl=None):
         fl.append(url)
 
     try:
-        links = [aurl.get_attribute('src') for aurl in
-                 driver.find_element_by_id('entryBody').find_elements_by_tag_name('img')]
-        for piclink in links:
-            if piclink.startswith('https://stat.ameba.jp/user_images/'):
-                piclink = re.search(r"(.+)\?caw=(\d+)", piclink).group(1)
-                piclist.append(piclink)
-        # print(links)
+        links = driver.find_element_by_id('entryBody').find_elements_by_tag_name('a')
+        for s in links:
+            piclink = s.find_element_by_tag_name('img').get_attribute('src')
+            piclink = re.search(r"(.+)\?caw=(\d+)", piclink).group(1)
+            piclist.append(piclink)
         # print(piclist)
         piclen = len(piclist)
         if piclen == 0:
@@ -123,7 +117,7 @@ def entrysaverfun(url, fl=None):
                     pictype = 'png'
                 picname = path + str(i) + '.' + pictype
                 with open(themename + '/' + path + '/' + picname, 'wb') as f:
-                        f.write(r.content)
+                    f.write(r.content)
                 i += 1
                 if i > piclen:
                     i = 1
@@ -193,7 +187,7 @@ def Pagefun(urlflag, Fristthemeurl):  # urlflag,0:theme,1:archive,2:entrylist
         print('Blog theme URL :', themeurl)
         themeid = themeid[0]
         print('Blog theme ID :', themeid)
-    elif urlflag==1:
+    elif urlflag == 1:
         Fristthemenum = re.findall(r'archive(.*?)-', Fristthemeurl)
         achiveid = re.findall(r'-.*?(\d+).html', Fristthemeurl)
         print('Blog archive URL :', themeurl)
@@ -231,11 +225,14 @@ def Pagefun(urlflag, Fristthemeurl):  # urlflag,0:theme,1:archive,2:entrylist
                     break
                 else:  # 翻回最初的前一页
                     if urlflag == 0:
-                        themeurl = 'https://ameblo.jp/' + blogname + '/theme' + str(Original_theme_num - 1) + '-' + themeid + '.html'
+                        themeurl = 'https://ameblo.jp/' + blogname + '/theme' + str(
+                            Original_theme_num - 1) + '-' + themeid + '.html'
                     elif urlflag == 1:
-                        themeurl = 'https://ameblo.jp/' + blogname + '/archive' + str(Original_theme_num - 1) + '-' + themeid + '.html'
+                        themeurl = 'https://ameblo.jp/' + blogname + '/archive' + str(
+                            Original_theme_num - 1) + '-' + themeid + '.html'
                     else:
-                        themeurl = 'https://ameblo.jp/' + blogname + '/entrylist-' + str(Original_theme_num - 1) + '.html'
+                        themeurl = 'https://ameblo.jp/' + blogname + '/entrylist-' + str(
+                            Original_theme_num - 1) + '.html'
                     themenum = Original_theme_num - 1
                     print('Searching entries on Page ' + str(themenum))
                     break
@@ -280,6 +277,7 @@ def Pagefun(urlflag, Fristthemeurl):  # urlflag,0:theme,1:archive,2:entrylist
         print('This archive has ' + str(len(entrylist)) + ' entries(entry).')
     else:
         print('This account has ' + str(len(entrylist)) + ' entries(entry).')
+
 
 def is_amebaurl(url):
     flag = 0
@@ -376,7 +374,7 @@ if __name__ == '__main__':
     job2list = []
     containkwlist = []
     failedlist = mp.Manager().list()
-    print('Ameba Blog Saver v2.2.1')
+    print('Ameba Blog Saver v2.2.2')
     print('Author  :  Nakateru (2019.12.23)')
     firstinput = input("Input Ameba Blog URL or 'O' to set keywords filter:")
     if firstinput == 'O' or firstinput == 'o':
@@ -425,7 +423,7 @@ if __name__ == '__main__':
                             exit()
 
                     else:
-                        print('Searching keywords in all entries text of this theme...')
+                        print('Searching keywords in all entries title of this theme...')
                         for i in entrylist:
                             entryurl = 'https://ameblo.jp' + i
                             if is_kw_contain(entryurl, kw, 0):
@@ -459,7 +457,7 @@ if __name__ == '__main__':
                             exit()
 
                     else:
-                        print('Searching keywords in all entries text of this theme...')
+                        print('Searching keywords in all entries title in this theme...')
                         for i in entrylist:
                             entryurl = 'https://ameblo.jp' + i
                             if is_kw_contain(entryurl, kw, 0):
@@ -474,8 +472,8 @@ if __name__ == '__main__':
                         failedlistfun(failedlist)
 
                 elif is_amebaurl(Fristurl) == 3:
-                    print('This is an Ameba accout URL')
-                    saveall = input('Do you want to save entries which contain keywords in this account?[y/n]')
+                    print('This is an Ameba account URL')
+                    saveall = input('Do you want to save entries which titles contain keywords in this account?[y/n]')
                     if saveall == 'y':
                         Pagefun(2, Fristurl)
                         entrylistlen = len(entrylist)
@@ -495,7 +493,7 @@ if __name__ == '__main__':
                                 exit()
 
                         else:
-                            print('Searching keywords in all entries text in this account...')
+                            print('Searching keywords in all entries title in this account...')
                             for i in entrylist:
                                 entryurl = 'https://ameblo.jp' + i
                                 if is_kw_contain(entryurl, kw, 0):
@@ -556,11 +554,11 @@ if __name__ == '__main__':
                             st1 = time.time()
                             failedlistfun(failedlist)
                         else:
-                            print('Entry title does not contain keywords')
+                            print('Entry text does not contain keywords')
                             exit()
 
                     else:
-                        print('Searching keywords in all entries text of this theme...')
+                        print('Searching keywords in all entries text in this theme...')
                         for i in entrylist:
                             entryurl = 'https://ameblo.jp' + i
                             if is_kw_contain(entryurl, kw, 1):
@@ -568,7 +566,7 @@ if __name__ == '__main__':
                             else:
                                 pass
                         containkwlistlen = len(containkwlist)
-                        print(containkwlistlen, 'entries title contain keywords')
+                        print(containkwlistlen, 'entries text contain keywords')
                         multicore(containkwlist, job2list, failedlist)
                         st1 = time.time()
                         failedlistfun(failedlist)
@@ -606,8 +604,8 @@ if __name__ == '__main__':
                         st1 = time.time()
                         failedlistfun(failedlist)
 
-                elif is_amebaurl(Fristurl)==3:
-                    print('This is an Ameba accout URL')
+                elif is_amebaurl(Fristurl) == 3:
+                    print('This is an Ameba account URL')
                     saveall = input('Do you want to save entries which contain keywords in this account?[y/n]')
                     if saveall == 'y':
                         Pagefun(2, Fristurl)
@@ -619,7 +617,7 @@ if __name__ == '__main__':
                             print('Only 1 entry in this account')
                             entryurl = 'https://ameblo.jp' + entrylist[0]
                             if is_kw_contain(entryurl, kw, 1):
-                                print('Entry title contains keywords')
+                                print('Entry text contains keywords')
                                 entrysaverfun(entryurl, failedlist)
                                 st1 = time.time()
                                 failedlistfun(failedlist)
@@ -711,8 +709,8 @@ if __name__ == '__main__':
 
         elif is_amebaurl(Fristurl) == 3:
             print('This is an Ameba accout URL')
-            saveall=input('Do you want to save all entries in this account?[y/n]')
-            if saveall=='y':
+            saveall = input('Do you want to save all entries in this account?[y/n]')
+            if saveall == 'y':
                 Pagefun(2, Fristurl)
                 entrylistlen = len(entrylist)
                 if entrylistlen == 0:
