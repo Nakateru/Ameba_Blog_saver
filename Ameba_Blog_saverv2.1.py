@@ -53,12 +53,10 @@ def entrysaverfun(url, fl=None):  # url,失败列表fl
     try:  # 判断有没正文
         blogtext
     except NameError:
-        False
         print('Failed to Get Text,URL:', url)
         print('Failed to Save Blog,URL:', url)
         fl.append(url)
     else:
-        True
         print('Got entry text successfully,URL:', url)
 
     # '''正文写入txt'''
