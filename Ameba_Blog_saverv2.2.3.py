@@ -4,24 +4,30 @@ import multiprocessing as mp
 import requests, os, re, json, time
 
 
-def piclinkfun(element):
-    flag = True
-    try:
-        element.find_element_by_tag_name('img')
-        return flag
-    except:
-        flag = False
-        return flag
-
-
 def entrysaverfun(url, fl=None):
-    global date, articletitle, datetime, themename, piclen, videolistlen
+    def piclinkfun(element):
+        flag = True
+        try:
+            element.find_element_by_tag_name('img')
+            return flag
+        except:
+            flag = False
+            return flag
+
+    datetime = '0000-00-00 00:00:00'
+    date = '0000-00-00'
+    articletitle = 'abc'
+    themename = 'abc'
+    piclen = 0
+    videolistlen = 0
+
     if fl is None:
         fl = []
     piclist = []
     videolist = []
     i = 1
 
+    print('Saving blog entry : ' + url)
     options = webdriver.ChromeOptions()
     options.add_argument('--headless')
     options.add_experimental_option('excludeSwitches', ['enable-automation'])
@@ -30,14 +36,14 @@ def entrysaverfun(url, fl=None):
 
     try:
         datetime = driver.find_element_by_xpath("//span[@class='articleTime']").text[:19]
+        date = datetime[:10]
     except:
         try:
             datetime = driver.find_element_by_xpath("//time[@class='skin-textQuiet']").text[-19:]
+            date = datetime[:10]
         except:
             print('Failed to Get Entry Time', url)
             fl.append(url)
-
-    date = datetime[:10]
 
     try:
         themename = driver.find_element_by_xpath("//span[@class='articleTheme']").text[4:]
@@ -58,7 +64,6 @@ def entrysaverfun(url, fl=None):
     path = path.replace(r'\\', '')
     path = json.loads(f'"{path}"')
     path = re.sub('[\/:*?"<>|]', '', path)
-    print('Saving blog entry : ' + url)
     # print('Blog entry ID : ' + entryid[0])
     # print('Theme name : ' + themename)
     # print('Path : ' + path)
@@ -69,7 +74,7 @@ def entrysaverfun(url, fl=None):
             print('Created folder ' + themename + '/' + path + ' successfully')
         else:
             print('Folder' + ' existed')
-    except Exception:
+    except:
         print('Failed to Creat Folder ')
         print('Failed to Save Blog :', url)
         fl.append(url)
@@ -77,7 +82,7 @@ def entrysaverfun(url, fl=None):
 
     try:
         blogtext = driver.find_element_by_id('entryBody').text
-    except Exception:
+    except:
         print('Failed to Get Entry Text:', url)
         fl.append(url)
 
@@ -93,7 +98,7 @@ def entrysaverfun(url, fl=None):
         with open(themename + '/' + path + '/' + textname, 'w', encoding='UTF-8') as f:
             f.write(articletitletext + ' ' + datetime + '\n' + 'テーマ： ' + themename + '\n' + blogtext)
         print('Saved blog ' + path + ' text')
-    except Exception:
+    except:
         print('Failed to Save Blog ' + path + ' Text')
         fl.append(url)
 
@@ -107,9 +112,9 @@ def entrysaverfun(url, fl=None):
         # print(piclist)
         piclen = len(piclist)
         if piclen == 0:
-            print('No picture in in blog ' + path)
+            print('No picture in blog ' + path)
 
-    except Exception:
+    except:
         print('Failed to Get ' + path + ' Pictures')
         fl.append(url)
 
@@ -133,7 +138,7 @@ def entrysaverfun(url, fl=None):
                 if i > piclen:
                     i = 1
                     print('Saved Blog ' + path + ' pictures')
-    except Exception:
+    except:
         print('Failed to Save pictures,URL:', url)
         fl.append(url)
 
@@ -150,7 +155,7 @@ def entrysaverfun(url, fl=None):
         videolistlen = len(videolist)
         if videolistlen == 0:
             print('Saved blog ' + path + ' Successfully')
-    except Exception:
+    except:
         print('Failed to Get ' + path + ' Videos URL')
         fl.append(url)
         driver.quit()
@@ -171,7 +176,7 @@ def entrysaverfun(url, fl=None):
             if i > videolistlen:
                 print('Saved Blog ' + path + ' videos')
                 print('Saved blog ' + path + ' Successfully')
-    except Exception:
+    except:
         print('Failed to Save videos,URL:', url)
         fl.append(url)
         driver.quit()
@@ -228,7 +233,7 @@ def Pagefun(urlflag, Fristthemeurl):  # urlflag,0:theme,1:archive,2:entrylist
             soup = BeautifulSoup(data, 'html.parser')
             NextP1 = soup.find('a', class_='skinSimpleBtn pagingNext')
             NextP2 = soup.find('a', class_='skin-paginationNext skin-btnIndex js-paginationNext')
-            if (NextP1 == None and NextP2 == None):  # 无下一页
+            if NextP1 == None and NextP2 == None:  # 无下一页
                 if themenum == 1:  # 只有一页
                     print('This theme only has 1 Page')
                     break
@@ -253,7 +258,7 @@ def Pagefun(urlflag, Fristthemeurl):  # urlflag,0:theme,1:archive,2:entrylist
                 print('Searching entries on Page ' + str(themenum))
                 if urlflag == 0:
                     themeurl = 'https://ameblo.jp/' + blogname + '/theme' + str(themenum) + '-' + themeid + '.html'
-                elif urlflag == 0:
+                elif urlflag == 1:
                     themeurl = 'https://ameblo.jp/' + blogname + '/archive' + str(themenum) + '-' + themeid + '.html'
                 else:
                     themeurl = 'https://ameblo.jp/' + blogname + '/entrylist-' + str(themenum) + '.html'
@@ -270,7 +275,7 @@ def Pagefun(urlflag, Fristthemeurl):  # urlflag,0:theme,1:archive,2:entrylist
                 print('Searching entries on Page ' + str(themenum))
                 if urlflag == 0:
                     themeurl = 'https://ameblo.jp/' + blogname + '/theme' + str(themenum) + '-' + themeid + '.html'
-                elif urlflag == 0:
+                elif urlflag == 1:
                     themeurl = 'https://ameblo.jp/' + blogname + '/archive' + str(themenum) + '-' + themeid + '.html'
                 else:
                     themeurl = 'https://ameblo.jp/' + blogname + '/entrylist-' + str(themenum) + '.html'
@@ -372,8 +377,8 @@ def is_kw_contain(url, keyword, title_or_text=0):
     data = requests.get(url).content
     soup = BeautifulSoup(data, 'html.parser')
     if title_or_text == 0:
-        articletitle = re.findall(r'entry_title":"(.*?)","entry_text"', soup.get_text())
-        if keyword in articletitle[0]:
+        checktitle = re.findall(r'entry_title":"(.*?)","entry_text"', soup.get_text())
+        if keyword in checktitle[0]:
             return flag
         else:
             flag = False
@@ -407,7 +412,7 @@ if __name__ == '__main__':
                     blogname = re.findall(r'ameblo.jp/(.*?)/', Fristurl)
                     blogname = blogname[0]
                     print('Blog username: ' + blogname)
-                except Exception:
+                except:
                     print('Error URL')
                     exit()
 
@@ -673,11 +678,12 @@ if __name__ == '__main__':
             txt_file_name = input('Input txt file name:')
             st = time.time()
             try:
-                with open(txt_file_name) as f:
-                    content = f.read().splitlines()
-                if not content == 0:
-                    for url in [s for s in content if s not in ['', ' ', None]]:
-                        entrysaverfun(url, failedlist)
+                with open(txt_file_name, encoding='UTF-8') as f:
+                    txt_file = f.read().splitlines()
+                if not len(txt_file) == 0:
+                    for url in [s for s in txt_file if s not in ['', ' ', None]]:
+                        url = re.split(r"[\s\n]", url)
+                        entrysaverfun(url[0], failedlist)
                     st1 = time.time()
                     failedlistfun(failedlist)
                 else:
