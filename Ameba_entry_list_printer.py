@@ -1,7 +1,5 @@
 from selenium import webdriver
-from bs4 import BeautifulSoup
-import multiprocessing as mp
-import requests, os, re, json, time
+import re
 
 def Searchentry(url):
     driver.get(url)
