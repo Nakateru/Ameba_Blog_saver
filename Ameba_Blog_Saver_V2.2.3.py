@@ -678,11 +678,12 @@ if __name__ == '__main__':
             txt_file_name = input('Input txt file name:')
             st = time.time()
             try:
-                with open(txt_file_name) as f:
-                    content = f.read().splitlines()
-                if not content == 0:
-                    for url in [s for s in content if s not in ['', ' ', None]]:
-                        entrysaverfun(url, failedlist)
+                with open(txt_file_name, encoding='UTF-8') as f:
+                    txt_file = f.read().splitlines()
+                if not len(txt_file) == 0:
+                    for url in [s for s in txt_file if s not in ['', ' ', None]]:
+                        url = re.split(r"[\s\n]", url)
+                        entrysaverfun(url[0], failedlist)
                     st1 = time.time()
                     failedlistfun(failedlist)
                 else:
