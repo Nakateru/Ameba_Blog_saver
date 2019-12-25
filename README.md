@@ -71,4 +71,4 @@ bug fixes
 
 输入主题url后打印出主题的记事url+时间+题目，并保存到theme_list.txt
 
-*使用selenium搜索记事(会比较慢)(saver使用requests搜索记事url）
+*使用selenium搜索记事(比较慢)(saver使用requests+Beautifulsoup搜索记事url）
