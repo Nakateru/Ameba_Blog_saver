@@ -1,7 +1,7 @@
 from selenium import webdriver
 from bs4 import BeautifulSoup
 import multiprocessing as mp
-import requests, os, re, json, time
+import requests, os, re, time
 
 
 def entrysaverfun(url, fl=None):
@@ -20,6 +20,7 @@ def entrysaverfun(url, fl=None):
     themename = 'abc'
     piclen = 0
     videolistlen = 0
+    blogtext = ''
 
     if fl is None:
         fl = []
@@ -61,9 +62,7 @@ def entrysaverfun(url, fl=None):
         # entryid = re.findall(r'-.*?(\d+).html', url)
 
     path = date + ' ' + articletitle
-    path = path.replace(r'\\', '')
-    path = json.loads(f'"{path}"')
-    path = re.sub('[\/:*?"<>|]', '', path)
+    path = re.sub(r'[\\/:*?"<>|]', '', path)
     # print('Blog entry ID : ' + entryid[0])
     # print('Theme name : ' + themename)
     # print('Path : ' + path)
@@ -94,9 +93,8 @@ def entrysaverfun(url, fl=None):
     # '''
     try:
         textname = path + '.txt'
-        articletitletext = json.loads(f'"{articletitle}"')
         with open(themename + '/' + path + '/' + textname, 'w', encoding='UTF-8') as f:
-            f.write(articletitletext + ' ' + datetime + '\n' + 'テーマ： ' + themename + '\n' + blogtext)
+            f.write(articletitle + ' ' + datetime + '\n' + 'テーマ： ' + themename + '\n' + blogtext)
         print('Saved blog ' + path + ' text')
     except:
         print('Failed to Save Blog ' + path + ' Text')
