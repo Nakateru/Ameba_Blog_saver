@@ -118,9 +118,6 @@ def Pagefun(urlflag, Fristthemeurl):  # urlflag,0:theme,1:archive,2:entrylist
         print(' Failed to search entries URL')
         exit()
 
-    entrylist = list(set(entrylist))  # 去除重复元素
-    # print(entrylist)
-
     if urlflag == 0:
         print('This theme has ' + str(len(entrylist)) + ' entries(entry).')
     elif urlflag == 1:
