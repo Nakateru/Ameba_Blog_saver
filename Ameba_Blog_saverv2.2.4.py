@@ -105,14 +105,16 @@ def entrysaverfun(url, fl=None):
         for s in links:
             if piclinkfun(s):
                 piclink = s.find_element_by_tag_name('img').get_attribute('src')
-                piclink = re.search(r"(.+)\?caw=(\d+)", piclink).group(1)
-                piclist.append(piclink)
+                if piclink.startswith('https://stat.ameba.jp/user_images'):
+                    piclink = re.search(r"(.+)\?caw=(\d+)", piclink).group(1)
+                    piclist.append(piclink)
 
         links = driver.find_element_by_id('entryBody').find_elements_by_tag_name('div')
         for s in links:
             if piclinkfun(s):
                 piclink = s.find_element_by_tag_name('img').get_attribute('src')
                 if piclink.startswith('https://stat.ameba.jp/user_images'):
+                    piclink = re.search(r"(.+)\?caw=(\d+)", piclink).group(1)
                     piclist.append(piclink)
 
         # print(piclist)
