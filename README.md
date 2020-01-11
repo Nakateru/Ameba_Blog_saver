@@ -67,6 +67,11 @@ bug fixes
 2）输入3
 4）输入txt文件名,如failed_list.txt或theme_list.txt等
 
+V2.2.4
+
+修复部分记事的搜图问题
+
+
 # Ameba_entry_list_printer
 
 输入主题url后打印出主题的记事url+时间+题目，并保存到theme_list.txt
