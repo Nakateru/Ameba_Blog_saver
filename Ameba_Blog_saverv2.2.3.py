@@ -107,7 +107,16 @@ def entrysaverfun(url, fl=None):
                 piclink = s.find_element_by_tag_name('img').get_attribute('src')
                 piclink = re.search(r"(.+)\?caw=(\d+)", piclink).group(1)
                 piclist.append(piclink)
+
+        links = driver.find_element_by_id('entryBody').find_elements_by_tag_name('div')
+        for s in links:
+            if piclinkfun(s):
+                piclink = s.find_element_by_tag_name('img').get_attribute('src')
+                if piclink.startswith('https://stat.ameba.jp/user_images'):
+                    piclist.append(piclink)
+
         # print(piclist)
+        piclist=list(set(piclist))
         piclen = len(piclist)
         if piclen == 0:
             print('No picture in blog ' + path)
@@ -395,8 +404,8 @@ if __name__ == '__main__':
     job2list = []
     containkwlist = []
     failedlist = mp.Manager().list()
-    print('Ameba Blog Saver v2.2.3')
-    print('Author  :  Nakateru (2019.12.25)')
+    print('Ameba Blog Saver v2.2.4')
+    print('Author  :  Nakateru (2020.01.11)')
     firstinput = input("Input Ameba Blog URL or 'O' to enter set mode:")
     if firstinput == 'O' or firstinput == 'o':
         print(
